@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { JWT_SECRET } = require('../auth/secrets')
+const { JWT_SECRET } = require('./secrets/index')
 
 const tokenBuilder = (user) =>{
     const payload = {
@@ -9,13 +9,13 @@ const tokenBuilder = (user) =>{
     const options = {
         expiresIn: '1d'
     }
-    const token = jwt.sign(
+    return jwt.sign(
         payload, JWT_SECRET, options, 
 
     )
-    return token
+    
 }
 
-module.exports - {
+module.exports = {
     tokenBuilder
 }

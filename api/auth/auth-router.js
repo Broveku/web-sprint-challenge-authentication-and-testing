@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs')
 const User = require('../models/model')
-const tokenBuilder = require('../auth/tokenBuilder')
+const { tokenBuilder } = require('./tokenBuilder')
 const { 
   checkUsernameToken, 
   checkUsernameExists, 
@@ -10,14 +10,14 @@ const {
 
 
 
-router.post('/register', 
-checkUsernameExists, 
-checkUsernameToken, 
-validateFields, (req, res, next) => {
-  const { username, password } = req.body
-  const hash = bcrypt.hashSync(password, 8)
+router.post(
+  '/register', 
+  checkUsernameToken, 
+  validateFields, (req, res, next) => {
+    const { username, password } = req.body
+    const hash = bcrypt.hashSync(password, 8)
 
-    User.add({username, password: hash})
+    User.add({ username, password: hash })
         .then((newUser) =>{
           res.status(201).json(newUser)
         })
@@ -49,7 +49,7 @@ validateFields, (req, res, next) => {
   */
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', validateFields, checkUsernameExists, (req, res, next) => {
   if (bcrypt.compareSync(req.body.password, req.user.password)){
     const token = tokenBuilder(req.user)
     res.json({message: `welcome, ${req.user.username}`, token})

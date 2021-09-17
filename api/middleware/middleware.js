@@ -17,7 +17,7 @@ const checkUsernameExists = async (req, res, next)=>{
     try{
         const user = await User.findBy(req.body.username)
         if (!user){
-            next({staus: 401, message: 'username does not exist'})
+            next({status: 401, message: 'username does not exist'})
         }else{
             req.user = user
             next()
@@ -28,7 +28,7 @@ const checkUsernameExists = async (req, res, next)=>{
 }
 
 const validateFields = (req, res, next) =>{
-    if (!req.body.username || !req.body.password) {
+    if (!req.body.username || !req.body.username.trim() || !req.body.password || !req.body.password.trim()) {
         next({status: 401, message: 'username and password are required'})
     } else {
         req.body.username = req.body.username.trim()
